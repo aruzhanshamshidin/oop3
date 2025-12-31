@@ -1,22 +1,39 @@
 package oopass.edu;
+
 public class Main {
     public static void main(String[] args) {
-        Film film1 = new Film("The maze runner", "Sci-Fi", 119);
-        Film film2 = new Film("Avatar", "Action", 163);
 
-        Viewer viewer1 = new Viewer("Aigera", 18);
-        Viewer viewer2 = new Viewer("Baga", 22);
+        Cinema cinema = new Cinema("Dream Cinema");
 
-        Cinema cinema = new Cinema("Dream Cinema", 5);
+        Film f1 = new Film("Avatar", "Action", 163);
+        Film f2 = new Film("The Maze Runner", "Sci-Fi", 119);
+        Film f3 = new Film("Interstellar", "Sci-Fi", 169);
 
-        cinema.addFilm(film1);
-        cinema.addFilm(film2);
+        cinema.addFilm(f1);
+        cinema.addFilm(f2);
+        cinema.addFilm(f3);
 
-        viewer1.chooseFilm(film1);
-        viewer2.chooseFilm(film2);
+        Viewer v1 = new Viewer("Aigera", 18);
+        Viewer v2 = new Viewer("Baga", 22);
 
-        cinema.displayFilms();
-        viewer1.displayInfo();
-        viewer2.displayInfo();
+        v1.chooseFilm(f2);
+        v2.chooseFilm(f1);
+
+        System.out.println("🎬 All films:");
+        cinema.getAllFilms().forEach(System.out::println);
+
+        System.out.println("\n🔍 Sci-Fi films:");
+        cinema.filterByGenre("Sci-Fi").forEach(System.out::println);
+
+        System.out.println("\n⏱ Films under 150 minutes:");
+        cinema.filterByDuration(150).forEach(System.out::println);
+
+        System.out.println("\n🔃 Sorted by title:");
+        cinema.sortByTitle();
+        cinema.getAllFilms().forEach(System.out::println);
+
+        System.out.println("\n👥 Viewers:");
+        System.out.println(v1);
+        System.out.println(v2);
     }
 }
