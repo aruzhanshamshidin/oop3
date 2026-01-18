@@ -1,39 +1,75 @@
 package oopass.edu;
 
+import java.sql.SQLException;
+import java.util.Scanner;
+
 public class Main {
-    public static void main(String[] args) {
 
-        Cinema cinema = new Cinema("Dream Cinema");
+    public static void main(String[] args) throws SQLException {
 
-        Film f1 = new Film("Avatar", "Action", 163);
-        Film f2 = new Film("The Maze Runner", "Sci-Fi", 119);
-        Film f3 = new Film("Interstellar", "Sci-Fi", 169);
+        Scanner sc = new Scanner(System.in);
 
-        cinema.addFilm(f1);
-        cinema.addFilm(f2);
-        cinema.addFilm(f3);
+        while (true) {
+            System.out.println("\n🎬 MOVIE TICKET RESERVATION SYSTEM");
+            System.out.println("1 - Show all films");
+            System.out.println("2 - Add film");
+            System.out.println("3 - Update film title");
+            System.out.println("4 - Delete film");
+            System.out.println("5 - Show all viewers");
+            System.out.println("6 - Add viewer");
+            System.out.println("0 - Exit");
 
-        Viewer v1 = new Viewer("Aigera", 18);
-        Viewer v2 = new Viewer("Baga", 22);
+            int command = sc.nextInt();
+            sc.nextLine();
 
-        v1.chooseFilm(f2);
-        v2.chooseFilm(f1);
+            switch (command) {
 
-        System.out.println("🎬 All films:");
-        cinema.getAllFilms().forEach(System.out::println);
+                case 1 -> FilmDAO.showAllFilms();
 
-        System.out.println("\n🔍 Sci-Fi films:");
-        cinema.filterByGenre("Sci-Fi").forEach(System.out::println);
+                case 2 -> {
+                    System.out.print("Title: ");
+                    String title = sc.nextLine();
+                    System.out.print("Genre: ");
+                    String genre = sc.nextLine();
+                    System.out.print("Duration: ");
+                    int duration = sc.nextInt();
+                    FilmDAO.addFilm(title, genre, duration);
+                }
 
-        System.out.println("\n⏱ Films under 150 minutes:");
-        cinema.filterByDuration(150).forEach(System.out::println);
+                case 3 -> {
+                    System.out.print("Film ID: ");
+                    int id = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("New title: ");
+                    String newTitle = sc.nextLine();
+                    FilmDAO.updateFilm(id, newTitle);
+                }
 
-        System.out.println("\n🔃 Sorted by title:");
-        cinema.sortByTitle();
-        cinema.getAllFilms().forEach(System.out::println);
+                case 4 -> {
+                    System.out.print("Film ID to delete: ");
+                    int id = sc.nextInt();
+                    FilmDAO.deleteFilm(id);
+                }
 
-        System.out.println("\n👥 Viewers:");
-        System.out.println(v1);
-        System.out.println(v2);
+                case 5 -> ViewerDAO.showAllViewers();
+
+                case 6 -> {
+                    System.out.print("Viewer name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Age: ");
+                    int age = sc.nextInt();
+                    System.out.print("Film ID: ");
+                    int filmId = sc.nextInt();
+                    ViewerDAO.addViewer(name, age, filmId);
+                }
+
+                case 0 -> {
+                    System.out.println("Bye 👋");
+                    System.exit(0);
+                }
+
+                default -> System.err.println("Unknown command");
+            }
+        }
     }
 }
