@@ -1,46 +1,47 @@
 package oopass.edu;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FilmDAO {
-
-    public static void addFilm(String title, String genre, int duration) throws SQLException {
-        String sql = "INSERT INTO films (title, genre, duration) VALUES (?, ?, ?)";
-        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-        ps.setString(1, title);
-        ps.setString(2, genre);
-        ps.setInt(3, duration);
-        ps.executeUpdate();
-    }
-
-    public static void showAllFilms() throws SQLException {
+    public static List<Film> getAllFilms() throws SQLException {
+        List<Film> films = new ArrayList<>();
         String sql = "SELECT * FROM films ORDER BY id";
-        Statement st = DBConnection.getConnection().createStatement();
-        ResultSet rs = st.executeQuery(sql);
 
-        while (rs.next()) {
-            System.out.println(
-                    rs.getInt("id") + " | " +
-                            rs.getString("title") + " | " +
-                            rs.getString("genre") + " | " +
-                            rs.getInt("duration") + " min"
-            );
+        try (Connection conn = DBConnection.getConnection();
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                // Используем Builder для создания фильма
+                films.add(new Film.Builder()
+                        .setId(rs.getInt("id"))
+                        .setTitle(rs.getString("title"))
+                        .setGenre(rs.getString("genre"))
+                        .setDuration(rs.getInt("duration"))
+                        .build());
+            }
+        }
+        return films;
+    }
+    public static void addFilm(Film film) throws java.sql.SQLException {
+        String sql = "INSERT INTO films (title, genre, duration) VALUES (?, ?, ?)";
+        try (java.sql.Connection conn = DBConnection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, film.getTitle());
+            ps.setString(2, film.getGenre());
+            ps.setInt(3, film.getDuration());
+            ps.executeUpdate();
         }
     }
 
-    public static void updateFilm(int id, String title) throws SQLException {
-        String sql = "UPDATE films SET title = ? WHERE id = ?";
-        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-        ps.setString(1, title);
-        ps.setInt(2, id);
-        ps.executeUpdate();
-    }
-
-    public static void deleteFilm(int id) throws SQLException {
+    public static void deleteFilm(int id) throws java.sql.SQLException {
         String sql = "DELETE FROM films WHERE id = ?";
-        PreparedStatement ps = DBConnection.getConnection().prepareStatement(sql);
-        ps.setInt(1, id);
-        ps.executeUpdate();
+        try (java.sql.Connection conn = DBConnection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
     }
 }
-

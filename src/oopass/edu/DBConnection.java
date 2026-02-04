@@ -5,13 +5,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
+    // Статическая переменная для хранения единственного экземпляра
+    private static Connection connection;
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/cinema_db";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "1234"; // твой пароль
+    private DBConnection() {} // Приватный конструктор
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        // Ленивая инициализация: создаем, только если еще нет
+        if (connection == null || connection.isClosed()) {
+            String url = "jdbc:postgresql://localhost:5432/postgres";
+            String user = "postgres";
+            String pass = "aruca0808";
+            connection = DriverManager.getConnection(url, user, pass);
+        }
+        return connection;
     }
 }
-

@@ -1,57 +1,39 @@
 package oopass.edu;
 
-import java.util.Objects;
-
 public class Film {
-    private int id;          // 👈 ДОБАВИЛИ
+    private int id;
     private String title;
     private String genre;
     private int duration;
 
-    // constructor without id (для INSERT)
-    public Film(String title, String genre, int duration) {
-        this.title = title;
-        this.genre = genre;
-        this.duration = duration;
+    // Приватный конструктор: объект создается только через Builder
+    private Film(Builder builder) {
+        this.id = builder.id;
+        this.title = builder.title;
+        this.genre = builder.genre;
+        this.duration = builder.duration;
     }
 
-    // constructor with id (для SELECT)
-    public Film(int id, String title, String genre, int duration) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-        this.duration = duration;
-    }
-
+    // Геттеры
     public int getId() { return id; }
     public String getTitle() { return title; }
     public String getGenre() { return genre; }
     public int getDuration() { return duration; }
 
-    public void setId(int id) { this.id = id; }
-    public void setTitle(String title) { this.title = title; }
-    public void setGenre(String genre) { this.genre = genre; }
-    public void setDuration(int duration) { this.duration = duration; }
+    // Статический вложенный класс Builder
+    public static class Builder {
+        private int id;
+        private String title;
+        private String genre;
+        private int duration;
 
-    @Override
-    public String toString() {
-        return "Film{id=" + id +
-                ", title='" + title + '\'' +
-                ", genre='" + genre + '\'' +
-                ", duration=" + duration +
-                '}';
-    }
+        public Builder setId(int id) { this.id = id; return this; }
+        public Builder setTitle(String title) { this.title = title; return this; }
+        public Builder setGenre(String genre) { this.genre = genre; return this; }
+        public Builder setDuration(int duration) { this.duration = duration; return this; }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Film)) return false;
-        Film film = (Film) o;
-        return id == film.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        public Film build() {
+            return new Film(this);
+        }
     }
 }

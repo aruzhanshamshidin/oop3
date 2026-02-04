@@ -3,10 +3,26 @@ package oopass.edu;
 import java.util.Objects;
 
 public class Viewer extends Person {
+    private int id; // Поле для хранения ID из базы данных
     private Film chosenFilm;
 
+    // 1. Конструктор для создания нового зрителя (например, в Postman)
     public Viewer(String name, int age) {
         super(name, age);
+    }
+
+    public Viewer(int id, String name, int age) {
+        super(name, age);
+        this.id = id;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Film getChosenFilm() {
@@ -24,8 +40,10 @@ public class Viewer extends Person {
 
     @Override
     public String toString() {
-        return "Viewer{name='" + getName() +
-                "', age=" + getAge() +
+        return "Viewer{" +
+                "id=" + id +
+                ", name='" + getName() + '\'' +
+                ", age=" + getAge() +
                 ", chosenFilm=" + (chosenFilm != null ? chosenFilm.getTitle() : "none") +
                 '}';
     }
@@ -35,13 +53,13 @@ public class Viewer extends Person {
         if (this == o) return true;
         if (!(o instanceof Viewer)) return false;
         Viewer viewer = (Viewer) o;
-        return Objects.equals(getName(), viewer.getName()) &&
-                Objects.equals(chosenFilm, viewer.chosenFilm);
+        return id == viewer.id &&
+                getAge() == viewer.getAge() &&
+                Objects.equals(getName(), viewer.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), chosenFilm);
+        return Objects.hash(id, getName(), getAge());
     }
 }
-
