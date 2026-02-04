@@ -9,7 +9,7 @@ public abstract class Person {
         this.age = age;
     }
 
-    // Геттеры и сеттеры живут здесь!
+
     public String getName() { return name; }
     public int getAge() { return age; }
 

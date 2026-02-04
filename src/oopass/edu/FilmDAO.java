@@ -4,17 +4,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilmDAO {
-    public static List<Film> getAllFilms() throws SQLException {
+public class FilmDAO implements Repository<Film> {
+    @Override
+    public List<Film> getAll() throws SQLException {
         List<Film> films = new ArrayList<>();
-        String sql = "SELECT * FROM films ORDER BY id";
-
+        String sql = "SELECT * FROM films";
         try (Connection conn = DBConnection.getConnection();
-             Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                // Используем Builder для создания фильма
                 films.add(new Film.Builder()
                         .setId(rs.getInt("id"))
                         .setTitle(rs.getString("title"))
@@ -25,10 +23,12 @@ public class FilmDAO {
         }
         return films;
     }
-    public static void addFilm(Film film) throws java.sql.SQLException {
+
+    @Override
+    public void add(Film film) throws SQLException {
         String sql = "INSERT INTO films (title, genre, duration) VALUES (?, ?, ?)";
-        try (java.sql.Connection conn = DBConnection.getConnection();
-             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, film.getTitle());
             ps.setString(2, film.getGenre());
             ps.setInt(3, film.getDuration());
@@ -36,10 +36,11 @@ public class FilmDAO {
         }
     }
 
-    public static void deleteFilm(int id) throws java.sql.SQLException {
+    @Override
+    public void delete(int id) throws SQLException {
         String sql = "DELETE FROM films WHERE id = ?";
-        try (java.sql.Connection conn = DBConnection.getConnection();
-             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }

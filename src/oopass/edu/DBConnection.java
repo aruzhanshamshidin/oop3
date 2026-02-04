@@ -5,13 +5,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-    // Статическая переменная для хранения единственного экземпляра
+
     private static Connection connection;
 
-    private DBConnection() {} // Приватный конструктор
+    private DBConnection() {}
 
     public static Connection getConnection() throws SQLException {
-        // Ленивая инициализация: создаем, только если еще нет
+
         if (connection == null || connection.isClosed()) {
             String url = "jdbc:postgresql://localhost:5432/postgres";
             String user = "postgres";

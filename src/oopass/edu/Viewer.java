@@ -3,10 +3,10 @@ package oopass.edu;
 import java.util.Objects;
 
 public class Viewer extends Person {
-    private int id; // Поле для хранения ID из базы данных
+    private int id;
     private Film chosenFilm;
 
-    // 1. Конструктор для создания нового зрителя (например, в Postman)
+
     public Viewer(String name, int age) {
         super(name, age);
     }

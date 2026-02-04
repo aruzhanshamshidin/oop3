@@ -22,7 +22,7 @@ public class Cinema {
         return films;
     }
 
-    // 🔍 Search
+
     public Film findFilmByTitle(String title) {
         for (Film film : films) {
             if (film.getTitle().equalsIgnoreCase(title)) {
@@ -32,21 +32,20 @@ public class Cinema {
         return null;
     }
 
-    // 🎯 Filter
+
     public List<Film> filterByGenre(String genre) {
         return films.stream()
                 .filter(f -> f.getGenre().equalsIgnoreCase(genre))
                 .collect(Collectors.toList());
     }
 
-    // ⏱ Filter
     public List<Film> filterByDuration(int maxDuration) {
         return films.stream()
                 .filter(f -> f.getDuration() <= maxDuration)
                 .collect(Collectors.toList());
     }
 
-    // 🔃 Sort
+
     public void sortByTitle() {
         films.sort(Comparator.comparing(Film::getTitle));
     }

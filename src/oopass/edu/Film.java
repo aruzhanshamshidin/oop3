@@ -1,12 +1,15 @@
 package oopass.edu;
 
+import java.util.Objects;
+
 public class Film {
     private int id;
     private String title;
     private String genre;
     private int duration;
 
-    // Приватный конструктор: объект создается только через Builder
+    public Film() {}
+
     private Film(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
@@ -14,13 +17,30 @@ public class Film {
         this.duration = builder.duration;
     }
 
-    // Геттеры
-    public int getId() { return id; }
+   public int getId() { return id; }
     public String getTitle() { return title; }
     public String getGenre() { return genre; }
     public int getDuration() { return duration; }
 
-    // Статический вложенный класс Builder
+    @Override
+    public String toString() {
+        return "Film{id=" + id + ", title='" + title + "', genre='" + genre + "'}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Film film = (Film) o;
+        return id == film.id && Objects.equals(title, film.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
+    }
+
+
     public static class Builder {
         private int id;
         private String title;

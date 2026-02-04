@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Star - Premium Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
+        .movie-card:hover { transform: scale(1.05); transition: 0.4s ease; z-index: 10; }
+        .hero-bg { background-image: linear-gradient(to top, #0a0a0a, transparent), url('https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1920'); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body>
+<nav class="p-6 flex justify-between items-center fixed w-full z-50 bg-black/20 backdrop-blur-md">
+    <h1 class="text-red-600 text-3xl font-black italic tracking-tighter">CINEMA STAR</h1>
+    <button onclick="showLogin()" class="bg-red-600 px-6 py-2 rounded-full text-sm font-bold hover:bg-red-700 transition shadow-lg">Sign In</button>
+</nav>
+
+<div class="relative h-[500px] flex items-center px-12 hero-bg bg-cover bg-center">
+    <div class="relative z-10 max-w-2xl mt-10">
+        <h2 class="text-6xl font-black mb-4 leading-tight uppercase">Unlimited<br>Experience</h2>
+        <p class="text-lg text-zinc-400 mb-8">Integrated with Java 17, GSON, and PostgreSQL.</p>
+        <button class="bg-white text-black px-10 py-3 rounded-xl font-bold hover:bg-zinc-200 transition">▶ WATCH NOW</button>
+    </div>
+</div>
+
+<div class="px-12 -mt-10 relative z-20">
+    <div class="flex gap-4 mb-10 overflow-x-auto pb-2 no-scrollbar">
+        <span class="px-8 py-2 bg-red-600 rounded-full text-sm font-bold cursor-pointer shadow-xl">All</span>
+        <span class="px-8 py-2 bg-zinc-800 rounded-full text-sm font-medium cursor-pointer hover:bg-zinc-700 transition">Action</span>
+        <span class="px-8 py-2 bg-zinc-800 rounded-full text-sm font-medium cursor-pointer hover:bg-zinc-700 transition">Drama</span>
+        <span class="px-8 py-2 bg-zinc-800 rounded-full text-sm font-medium cursor-pointer hover:bg-zinc-700 transition">Sci-Fi</span>
+    </div>
+
+    <h3 class="text-2xl font-black mb-8 border-l-4 border-red-600 pl-4 uppercase">Featured Movies</h3>
+
+    <div id="movie-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    </div>
+</div>
+
+<div id="login-modal" class="hidden fixed inset-0 bg-black/95 flex justify-center items-center z-[100] backdrop-blur-md">
+    <div class="bg-zinc-900 p-12 rounded-[40px] w-[450px] border border-zinc-800 shadow-2xl text-center">
+        <h2 class="text-4xl font-black mb-10 tracking-tighter uppercase">Register</h2>
+        <div class="space-y-6 text-left">
+            <input id="v-name" type="text" placeholder="Full Name" class="w-full p-5 bg-zinc-800 rounded-2xl border border-zinc-700 focus:border-red-600 outline-none transition">
+            <input id="v-age" type="number" placeholder="Age" class="w-full p-5 bg-zinc-800 rounded-2xl border border-zinc-700 focus:border-red-600 outline-none transition">
+            <button onclick="registerViewer()" class="w-full bg-red-600 py-5 rounded-2xl font-black text-xl hover:bg-red-700 transition active:scale-95 shadow-xl shadow-red-900/20 uppercase">Join Cinema</button>
+            <button onclick="hideLogin()" class="w-full text-zinc-600 hover:text-white transition font-bold text-xs uppercase pt-2">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const myPosters = [
+        "https://i.pinimg.com/1200x/34/95/39/349539af45e3faa3a2f65bd74317a167.jpg",       // Аватар
+        "https://i.pinimg.com/1200x/0b/34/ce/0b34ce2145b475247577a5d438a199b0.jpg", // Интерстеллар
+        "https://i.pinimg.com/736x/ba/ad/19/baad195470d7506d2a5ec04b25215625.jpg",  // Бегущий в лабиринте
+        "https://i.pinimg.com/1200x/75/1f/54/751f5482facac19cff49ca5e0a0861cf.jpg"       // Титаник
+    ];
+
+    async function loadMovies() {
+        try {
+            const response = await fetch('/api/films');
+            const films = await response.json();
+            const grid = document.getElementById('movie-grid');
+
+            grid.innerHTML = films.map((f, index) => {
+                const posterUrl = myPosters[index % myPosters.length];
+                return `
+                        <div class="movie-card bg-zinc-900 rounded-[30px] overflow-hidden shadow-2xl border border-zinc-800/50 flex flex-col cursor-pointer">
+                            <div class="h-[400px] overflow-hidden relative">
+                                <img src="${posterUrl}" alt="poster" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                                <div class="absolute top-4 left-4 bg-red-600 px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest">Premium</div>
+                            </div>
+                            <div class="p-6">
+                                <h4 class="font-black text-lg mb-1 uppercase tracking-tighter">${f.title}</h4>
+                                <div class="flex justify-between text-zinc-500 text-[10px] font-black uppercase mb-4">
+                                    <span>${f.genre}</span>
+                                    <span>${f.duration} min</span>
+                                </div>
+                                <button class="w-full py-3 bg-zinc-800 rounded-xl text-[10px] font-black hover:bg-white hover:text-black transition-all duration-300 uppercase tracking-widest">Watch Now</button>
+                            </div>
+                        </div>
+                    `;
+            }).join('');
+        } catch (err) {
+            console.error("API error! Make sure Main.java is running.");
+        }
+    }
+
+    async function registerViewer() {
+        const name = document.getElementById('v-name').value;
+        const age = document.getElementById('v-age').value;
+        if(!name || !age) return;
+        try {
+            await fetch('/api/viewers', {
+                method: 'POST',
+                body: JSON.stringify({ name, age: parseInt(age) })
+            });
+            hideLogin();
+            document.getElementById('v-name').value = '';
+            document.getElementById('v-age').value = '';
+            console.log("Registered in PostgreSQL!");
+        } catch (err) {
+            console.error("Database connection failed!");
+        }
+    }
+
+    function showLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
+    function hideLogin() { document.getElementById('login-modal').classList.add('hidden'); }
+
+    loadMovies();
+</script>
+</body>
+</html>
